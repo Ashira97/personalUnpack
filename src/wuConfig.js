@@ -28,9 +28,12 @@ function doConfig(configFile, cb) {
     let dir = path.dirname(configFile);
     wu.get(configFile, content => {
         let e = JSON.parse(content);
-        let k = e.pages;
-        k.splice(k.indexOf(wu.changeExt(e.entryPagePath)), 1);
-        k.unshift(wu.changeExt(e.entryPagePath));
+        let k = e.pages || [];
+        if(k.length != 0){
+            k.splice(k.indexOf(wu.changeExt(e.entryPagePath)), 1);
+            k.unshift(wu.changeExt(e.entryPagePath));
+        }
+        
         let app = {pages: k, window: e.global && e.global.window, tabBar: e.tabBar, networkTimeout: e.networkTimeout};
         if (e.subPackages) {
             let subPackages = [];
@@ -89,7 +92,11 @@ function doConfig(configFile, cb) {
                         __wxAppCode__: attachInfo
                     }
                 })).run(matches.join(""));
-                for (let name in attachInfo) e.page[wu.changeExt(name, ".html")] = {window: attachInfo[name]};
+                for (let name in attachInfo){
+                    if(e.page != undefined && e.page != [] && e.page.length != 0 && typeof e.page[wu.changeExt(name, ".html")] != undefined){
+                        e.page[wu.changeExt(name, ".html")] = {window: attachInfo[name]};
+                    }
+                }
             }
         }
         let delWeight = 8;

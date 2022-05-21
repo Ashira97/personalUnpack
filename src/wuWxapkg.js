@@ -7,6 +7,8 @@ const path = require("path");
 const fs = require("fs");
 
 function header(buf) {
+    console.log("BUF");
+    console.log(buf);
     console.log("\nHeader info:");
     let firstMark = buf.readUInt8(0);
     console.log("  firstMark: 0x%s", firstMark.toString(16));

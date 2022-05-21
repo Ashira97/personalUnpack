@@ -7,7 +7,9 @@
   "scripts": {
     "start": "electron .",
     "buildmac": "electron-packager . --mac --out ../dist --overwrite --icon images/macicon.icns",
-    "buildwin": "electron-packager . --win --out ../dist --overwrite --icon images/winicon.ico"
+    "buildwin": "electron-packager . --win --out ../dist --overwrite --icon images/winicon.ico",
+    "decompile": "node ./wuWxapkg.js ../wxapkg/mini/HealthyShannXi/__APP__.wxapkg",
+    "subpackage": "node ./src/wuWxapkg.js -s=./wxapkg/decrypt_middle.wxapkg"
   },
   "build": {},
   "license": "GPL2",
