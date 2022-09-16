@@ -31,13 +31,18 @@ function genList(buf) {
     let fileInfo = [], off = 4;
     for (let i = 0; i < fileCount; i++) {
         let info = {};
-        let nameLen = buf.readUInt32BE(off);
+        let nameLen = buf.readUInt32BE(off); // i = 15 时 off 改为 1015
         off += 4;
         info.name = buf.toString('utf8', off, off + nameLen);
         off += nameLen;
         info.off = buf.readUInt32BE(off);
         off += 4;
         info.size = buf.readUInt32BE(off);
+        // if(i <= 14){ // sheep subpackages X   sheep main package V
+        //     info.off += 1;
+        // }else{
+        //     info.off += 2;
+        // }
         off += 4;
         fileInfo.push(info);
     }
@@ -46,8 +51,14 @@ function genList(buf) {
 
 function saveFile(dir, buf, list) {
     console.log("Saving files...");
-    for (let info of list)
-        wu.save(path.resolve(dir, (info.name.startsWith("/") ? "." : "") + info.name), buf.slice(info.off, info.off + info.size));
+    for (let info of list){
+        // wu.save(path.resolve(dir, (info.name.startsWith("/") ? "." : "") + info.name), buf.slice(info.off, info.off + info.size));
+        let buf_area = buf.slice(info.off, info.off + info.size);
+        let str_buf = new Buffer.from(buf_area);
+        let str = str_buf.toString();
+        let pa = path.join(dir, (info.name.startsWith("/") ? "." : "") + info.name);
+        fs.writeFileSync(pa,str);
+    }
 }
 
 function packDone(dir, cb, order) {
@@ -189,8 +200,11 @@ function doFile(name, cb, order) {
     let dir = path.resolve(name, "..", path.basename(name, ".wxapkg"));
     wu.get(name, buf => {
         let [infoListLength, dataLength] = header(buf.slice(0, 14));
-        if (order.includes("o")) wu.addIO(console.log.bind(console), "Unpack done.");
-        else wu.addIO(packDone, dir, cb, order);
+        // if (order.includes("o")){
+        //     wu.addIO(console.log.bind(console), "Unpack done.");
+        // } else {
+            wu.addIO(packDone, dir, cb, order);
+        // }
         saveFile(dir, buf, genList(buf.slice(14, infoListLength + 14)));
     }, {});
 }
