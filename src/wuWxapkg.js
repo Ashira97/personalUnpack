@@ -5,6 +5,7 @@ const wuMl = require("./wuWxml.js");
 const wuSs = require("./wuWxss.js");
 const path = require("path");
 const fs = require("fs");
+const fse = require("fs-extra");
 
 function header(buf) {
     console.log("BUF");
@@ -57,6 +58,10 @@ function saveFile(dir, buf, list) {
         let str_buf = new Buffer.from(buf_area);
         let str = str_buf.toString();
         let pa = path.join(dir, (info.name.startsWith("/") ? "." : "") + info.name);
+        let dir_name = path.dirname(pa);
+        if(!fs.existsSync(dir_name)){
+            fse.mkdirsSync(dir_name);
+        }
         fs.writeFileSync(pa,str);
     }
 }
@@ -197,7 +202,7 @@ function doFile(name, cb, order) {
     console.log(name, cb, order);
     for (let ord of order) if (ord.startsWith("s=")) global.subPack = ord.slice(3);
     console.log("Unpack file " + name + "...");
-    let dir = path.resolve(name, "..", path.basename(name, ".wxapkg"));
+    let dir = path.resolve(name, "..", path.basename(name, ".jdapkg"));
     wu.get(name, buf => {
         let [infoListLength, dataLength] = header(buf.slice(0, 14));
         // if (order.includes("o")){

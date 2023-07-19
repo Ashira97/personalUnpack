@@ -8,8 +8,8 @@
     "start": "electron .",
     "buildmac": "electron-packager . --mac --out ../dist --overwrite --icon images/macicon.icns",
     "buildwin": "electron-packager . --win --out ../dist --overwrite --icon images/winicon.ico",
-    "decompile": "node ./wuWxapkg.js ../wxapkg/mini/HealthyShannXi/__APP__.wxapkg",
-    "subpackage": "node ./src/wuWxapkg.js -s=./wxapkg/decrypt_middle.wxapkg"
+    "decompile": "node ./wuWxapkg.js ../jdapkg/major.jdapkg",
+    "subpackage": "node ./wuWxapkg.js -s=../jdapkg/test.jdapkg"
   },
   "build": {},
   "license": "GPL2",
@@ -20,9 +20,6 @@
     "反编译"
   ],
   "author": "ezshine",
-  "devDependencies": {
-    "electron": "9.0.5"
-  },
   "dependencies": {
     "axios": "^0.21.0",
     "bytenode": "^1.1.7",
@@ -32,6 +29,7 @@
     "cssbeautify": "^0.3.1",
     "escodegen": "^2.0.0",
     "esprima": "^4.0.0",
+    "fs-extra": "^11.1.1",
     "js-beautify": "^1.7.5",
     "uglify-es": "^3.3.9",
     "vm2": "^3.6.0"
